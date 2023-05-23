@@ -8,10 +8,12 @@ class Preparation:
         self.table_name = table_name
         self.spark = spark
         self.schema = schema
+        self.create_table()
+        self.write_data()
 
     def create_table(self):
         df = self.spark.createDataFrame([], self.schema)
-        df.writeTo(self.table_name).create()
+        df.writeTo(self.table_name).createOrReplace()
 
     def write_data(self):
         df = self.spark.createDataFrame(self.data, self.schema)
