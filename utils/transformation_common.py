@@ -7,4 +7,4 @@ class TransformationCommon:
 
     @property
     def transformation(self):
-        return DataFrame
+        return None
