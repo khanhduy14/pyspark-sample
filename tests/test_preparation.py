@@ -10,13 +10,10 @@ def test_preparation():
     host = 'spark://localhost:7077'
     conf = SparkConf().setAppName(app_name).setMaster(host) \
         .set('spark.jars.packages', 'org.apache.iceberg:iceberg-spark-runtime-3.3_2.12:1.2.1') \
-        .set('spark.sql.extensions', 'org.apache.iceberg.spark.extensions.IcebergSparkSessionExtensions') \
-        .set('spark.sql.catalog.spark_catalog', 'org.apache.iceberg.spark.SparkSessionCatalog') \
-        .set('spark.sql.catalog.spark_catalog.type', 'hive') \
-        .set('spark.sql.catalog.local', 'org.apache.iceberg.spark.SparkCatalog') \
-        .set('spark.sql.catalog.local.type', 'hadoop') \
-        .set('spark.sql.defaultCatalog', 'local') \
-        .set('spark.sql.catalog.local.warehouse', '/Users/duykk/Desktop/SideProjects/docker-spark-iceberg/warehouse')
+        .set('spark.sql.catalog.rest_prod', 'org.apache.iceberg.spark.SparkCatalog') \
+        .set('spark.sql.catalog.rest_prod.type', 'rest') \
+        .set('spark.sql.catalog.rest-prod.default-namespace', 'rest') \
+        .set('spark.sql.catalog.rest_prod.uri', 'http://localhost:8181')
     spark = SparkSession.builder.config(conf=conf).getOrCreate()
     schema = StructType([
         StructField("vendor_id", LongType(), True),
@@ -33,6 +30,6 @@ def test_preparation():
         (1, 1000374, 8.4, 42.13, "Y")
     ]
 
-    df: DataFrame = Preparation('demo.nyc.taxis_test', spark, schema, data).get_df()
+    df: DataFrame = Preparation('rest.nyc.taxis_test', spark, schema, data).get_df()
     assert df.count() == 4
     spark.stop()
