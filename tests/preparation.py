@@ -14,10 +14,15 @@ class Preparation:
     def create_table(self):
         df = self.spark.createDataFrame([], self.schema)
         df.writeTo(self.table_name).createOrReplace()
+        df.explain(mode="formatted")
 
     def write_data(self):
         df = self.spark.createDataFrame(self.data, self.schema)
         df.writeTo(self.table_name).append()
+        df.explain(mode="formatted")
+
 
     def get_df(self) -> DataFrame:
-        return self.spark.table(self.table_name)
+        df = self.spark.table(self.table_name)
+        df.explain(mode='formatted')
+        return df
